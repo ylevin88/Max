@@ -1,20 +1,21 @@
 #include <iostream>
+#include <math.h>
 using namespace std;
 
-template<typename T>
-T Max(const T& a, const T& b, const T& c)
+template<typename T, typename Comperer>
+T Max(const T& a, const T& b, const T& c, Comperer comperer)
 {
 	T maxItem = a;
-	if (a >= b)
+	if (comperer(a, b))
 	{
-		if (c > a)
+		if (comperer(c, a))
 		{
 			maxItem = c;
 		}
 	}
 	else
 	{
-		if (b >= c)
+		if (comperer(b, c))
 		{
 			maxItem = b;
 		}
@@ -26,15 +27,46 @@ T Max(const T& a, const T& b, const T& c)
 	return maxItem;
 }
 
+bool maxInts(int a, int b)
+{
+	return a >= b ? true : false;
+}
+
+bool minInts(int a, int b)
+{
+	return a >= b ? false : true;
+}
+
+class comperDoubles
+{
+public:
+	comperDoubles(bool minComper) :m_minComper(minComper)
+	{};
+
+	bool operator()(double a, double b)
+	{
+		bool resault = false;
+		if (m_minComper)
+		{
+			resault = a > b;
+		}
+		else
+		{
+			resault = b > a;
+		}
+		return resault;
+	}
+private:
+	bool m_minComper;
+};
+
 void main()
 {
 	cout << "testing max int:" << endl;
-	cout << "the resault of max(1,2,3)" << Max(1, 2, 3) << endl;
-	cout << "the resault of max(3,2,1)" << Max(3, 2, 1) << endl;
-	cout << "the resault of max(1,3,2)" << Max(1, 3, 2) << endl;
+	cout << "the resault of Max(1, 2, 3, maxInts): " << Max(1, 2, 3, maxInts) << endl;
+	cout << "the resault of Max(1, 2, 3, minInts): " << Max(1, 2, 3, minInts) << endl;
 
 	cout << "testing max double:" << endl;
-	cout << "the resault of max(1.5,1.8,1.9)" << Max(1.5, 1.8, 1.9) << endl;
-	cout << "the resault of max(1.9,1.8,1.5)" << Max(1.9, 1.8, 1.5) << endl;
-	cout << "the resault of max(1.5,1.9,1.8)" << Max(1.5, 1.9, 1.8) << endl;
+	cout << "the resault of max(1.9, 2.3, 3.2, comperDoubles(true)): " << Max(1.9, 2.3, 3.2, comperDoubles(true)) << endl;
+	cout << "the resault of max(1.9, 2.3, 3.2, comperDoubles(false)): " << Max(1.9, 2.3, 3.2, comperDoubles(false)) << endl;
 }
